@@ -19,6 +19,7 @@ class Ball:#Class created called ball
 
 ball = Ball(canvas, 'red')
 while 1:#Main loop, contorls most of the program
+    ball.draw()
     tk.update_idletasks()
     tk.update()
     time.sleep(0.01)
