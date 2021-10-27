@@ -9,13 +9,30 @@ canvas = Canvas(tk, width=500, height=400, bd=0,highlightthickness=0)#No border 
 canvas.pack()
 tk.update()
 
-class Ball:#Class created called ball
+class Ball:#Class created called ball.
     def __init__(self,canvas,kolor):#function init "__" = magic function (change behavor of function).
         self.canvas = canvas
         self.id = canvas.create_oval(10,10,25,25, fill=kolor)#reading function canvas.create.oval and their parameters.
         self.canvas.move(self.id, 245,100)#We are moving the oval to the center of the canvas.
+        begin = [-3, -2, -1, 1, 2, 3]
+        random.shuffle(begin)
+        self.x = begin[0]
+        self.y = -3
+        self.canvas_height = self.canvas.winfo_height()
+        self.canvas_width = self.canvas.winfo_width()
+
     def draw(self):
-        self.canvas.move(self.id,0,-1)#All happends canvas -1 = move 1 px on the screen up.
+        self.canvas.move(self.id, self.x, self.y)  # all happends later in the def funtion.
+        position = self.canvas.coords(self.id)  # creating a variable 'position' and calling out the function 'coords' and that function gives us back the cords of x y.Where our oval is in the window.
+        if position[1] <= 0:#If position is <= 0 and if the ball hits the top of the screen the ball will stop moving out of our screen
+            self.y = 1
+        if position[3] >= self.canvas_height: #Checking if position is >= canvas.height (y) up and down.
+            self.y = -1
+        if position[0] <= 0:
+            self.x = 3
+        if position[2] >= self.canvas_width:#Checking if positon is >= canvas.with (x) left and right.
+            self.x = -3
+
 
 ball = Ball(canvas, 'red')
 while 1:#Main loop, contorls most of the program
