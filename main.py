@@ -21,6 +21,7 @@ class Ball:#Class created called ball.
         self.y = -3
         self.canvas_height = self.canvas.winfo_height()
         self.canvas_width = self.canvas.winfo_width()
+        self.hit_bottom = False
 
     def draw(self):
         self.canvas.move(self.id, self.x, self.y)  # all happends later in the def funtion.
@@ -28,26 +29,31 @@ class Ball:#Class created called ball.
         if position[1] <= 0:#If position is <= 0 and if the ball hits the top of the screen the ball will stop moving out of our screen
             self.y = 3
         if position[3] >= self.canvas_height: #Checking if position is >= canvas.height (y) up and down.
-            self.y = -3
-        if self.hit_paddle(pos) == True:
+            self.hit_bottom = True
+        if self.hit_paddle(position) == True:
             self.y = -3
         if position[0] <= 0:
             self.x = 3
         if position[2] >= self.canvas_width:#Checking if positon is >= canvas.with (x) left and right.
             self.x = -3
 
-    def hit_paddle(self,position):
-        pass
+    def hit_paddle(self,pos):#Def of "hit paddle" with the parameters pos.
+        paddle_pos = self.canvas.coords(self.paddle.id)#paddle id
+        if pos[2] >= paddle_pos[0] and pos[0] <= paddle_pos[2]:#first part of if and, checking the position of the racket and the ball position.
+            if pos[3] >= paddle_pos[1] and pos[3] <= paddle_pos[3]:
+                return True
+        return False
 
-class Paddle:
+
+class Paddle:#Making out bat
     def __init__(self, canvas, color):
         self.canvas = canvas
         self.id = canvas.create_rectangle(0, 0, 100, 10, fill=color)
-        self.canvas.move(self.id, 200, 300)
+        self.canvas.move(self.id, 200, 300)#Bat starting point
         self.x = 0
         self.canvas_width = self.canvas.winfo_width()
-        self.canvas.bind_all('<KeyPress-Left>', self.turn_left)
-        self.canvas.bind_all('<KeyPress-Right>', self.turn_right)
+        self.canvas.bind_all('<KeyPress-Left>', self.turn_left)#Setting up the keys so we are able to move our bat left
+        self.canvas.bind_all('<KeyPress-Right>', self.turn_right)#Setting up the keys so we are able to move our bat right
 
     def draw(self):
         self.canvas.move(self.id, self.x, 0)
@@ -57,16 +63,17 @@ class Paddle:
         elif pos[2] >= self.canvas_width:
             self.x = 0
 
-    def turn_left(self, evt):
+    def turn_left(self, evt):#Allows us to turn left
         self.x = -2
-    def turn_right(self, evt):
+    def turn_right(self, evt):#Allows us to turn right
         self.x = 2
 
-paddle = Paddle(canvas, 'blue')
+paddle = Paddle(canvas, 'blue')#Calling the function paddle and ball out with their color
 ball = Ball(canvas, paddle, 'red')
 while 1:#Main loop, contorls most of the program
-    ball.draw()
-    paddle.draw()
+    if ball.hit_bottom == False:
+        ball.draw()
+        paddle.draw()
     tk.update_idletasks()
     tk.update()
-    time.sleep(0.01)
+    time.sleep(0.01)#Speed of the ball
