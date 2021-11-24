@@ -9,6 +9,14 @@ canvas = Canvas(tk, width=500, height=400, bd=0,highlightthickness=0)#No border 
 canvas.pack()
 tk.update()
 
+score_value = 0
+textX = 10
+textY = 10
+
+# def score(x,y):
+#     score = font.render("Score: " + str(score_value),True, (255,255,255))
+#     canvas.blit(score, (x,y))
+
 class Ball:#Class created called ball.
     def __init__(self,canvas,paddle,kolor):#function init "__" = magic function (change behavor of function).
         self.canvas = canvas
@@ -37,6 +45,7 @@ class Ball:#Class created called ball.
         if position[2] >= self.canvas_width:#Checking if positon is >= canvas.with (x) left and right.
             self.x = -3
 
+
     def hit_paddle(self,pos):#Def of "hit paddle" with the parameters pos.
         paddle_pos = self.canvas.coords(self.paddle.id)#paddle id
         if pos[2] >= paddle_pos[0] and pos[0] <= paddle_pos[2]:#first part of if and, checking the position of the racket and the ball position.
@@ -51,9 +60,11 @@ class Paddle:#Making out bat
         self.id = canvas.create_rectangle(0, 0, 100, 10, fill=color)
         self.canvas.move(self.id, 200, 300)#Bat starting point
         self.x = 0
+        self.started = False
         self.canvas_width = self.canvas.winfo_width()
         self.canvas.bind_all('<KeyPress-Left>', self.turn_left)#Setting up the keys so we are able to move our bat left
         self.canvas.bind_all('<KeyPress-Right>', self.turn_right)#Setting up the keys so we are able to move our bat right
+        self.canvas.bind_all('<Button-1>', self.start_game)
 
     def draw(self):
         self.canvas.move(self.id, self.x, 0)
@@ -68,12 +79,17 @@ class Paddle:#Making out bat
     def turn_right(self, evt):#Allows us to turn right
         self.x = 2
 
+    def start_game(self, evt):
+        self.x = 2
+
+
 paddle = Paddle(canvas, 'blue')#Calling the function paddle and ball out with their color
 ball = Ball(canvas, paddle, 'red')
 while 1:#Main loop, contorls most of the program
-    if ball.hit_bottom == False:
+    if ball.hit_bottom == False and paddle.started == True:
         ball.draw()
         paddle.draw()
     tk.update_idletasks()
     tk.update()
+    # score(textX,textY)
     time.sleep(0.01)#Speed of the ball
