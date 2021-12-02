@@ -11,10 +11,8 @@ canvas.pack()
 tk.update()
 
 
-
-
 class Ball:
-    def __init__(self, canvas, score, paddle, color):
+    def __init__(self, canvas, paddle, score, color):
         self.canvas = canvas
         self.paddle = paddle
         self.score = score
@@ -81,19 +79,28 @@ class Paddle:
     def start_game(self, evt):
         self.started = True
 
+
 class Score:
     def __init__(self, canvas, color):
         self.score = 0
         self.canvas = canvas
         self.id = canvas.create_text(450, 10, text=self.score, fill=color)
+
     def hit(self):
         self.score += 1
-        self.canvas.itemconfig(self.id, text =self.score)
+        self.canvas.itemconfig(self.id, text=self.score)
 
-score = Score (canvas, 'green')
+
+def restart():
+    canvas.delete("all")
+    canvas.pack()
+
+
+score = Score(canvas, 'green')
 paddle = Paddle(canvas, 'blue')
 ball = Ball(canvas, paddle, score, 'red')
 game_over_text = canvas.create_text(250, 200, text='GAME OVER', state='hidden')
+
 while 1:
     if ball.hit_bottom == False and paddle.started == True:
         ball.draw()
@@ -101,11 +108,6 @@ while 1:
     if ball.hit_bottom == True:
         time.sleep(1)
         canvas.itemconfig(game_over_text, state='normal')
-        button1 = Button(canvas, text="Try Again!", command=canvas.quit, anchor=W)
-        button1_window = canvas.create_window(220, 220, anchor=NW, window=button1)
-
     tk.update_idletasks()
     tk.update()
     time.sleep(0.01)
-
-
